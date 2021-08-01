@@ -6,6 +6,8 @@
 	<dict>
 		<key>pass_draw_masks</key>
 		<dict>
+			<key>cullMode</key>
+			<string>front</string>
 			<key>colorStates</key>
 			<dict>
 				<key>clear</key>

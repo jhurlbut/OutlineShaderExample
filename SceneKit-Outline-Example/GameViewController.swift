@@ -8,14 +8,32 @@
 import SceneKit
 import QuartzCore
 
+let highlightedBitMask = 2
+let unHighlightedBitMask = 4
+
+//extend SCNNode to have highlighted func
 extension SCNNode {
-    func setHighlighted( _ highlighted : Bool = true, _ highlightedBitMask : Int = 2 ) {
-        categoryBitMask = highlightedBitMask
+    func setHighlighted( _ highlighted : Bool = true) {
+        if(highlighted == true){
+            categoryBitMask = highlightedBitMask
+        }
+        else {
+            categoryBitMask = unHighlightedBitMask
+        }
         for child in self.childNodes {
             child.setHighlighted()
         }
     }
+    func getHighlighted() -> Bool {
+        if(categoryBitMask == highlightedBitMask){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }
+
 class GameViewController: NSViewController, NSWindowDelegate {
     
     var technique : SCNTechnique!
@@ -113,5 +131,34 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 scnView.technique = technique
             }
         }
+        
+        // Add a click gesture recognizer
+        let clickGesture = NSClickGestureRecognizer(target: self, action: #selector(handleClick(_:)))
+        var gestureRecognizers = scnView.gestureRecognizers
+        gestureRecognizers.insert(clickGesture, at: 0)
+        scnView.gestureRecognizers = gestureRecognizers
+
     }
+    @objc
+    func handleClick(_ gestureRecognizer: NSGestureRecognizer) {
+        // retrieve the SCNView
+        let scnView = self.view as! SCNView
+        
+        // check what nodes are clicked
+        let p = gestureRecognizer.location(in: scnView)
+        let hitResults = scnView.hitTest(p, options: [:])
+        // check that we clicked on at least one object
+        if hitResults.count > 0 {
+            // retrieved the first clicked object
+            let result = hitResults[0]
+            
+            if(result.node.getHighlighted()){
+                result.node.setHighlighted(false)
+            }
+            else {
+                result.node.setHighlighted(true)
+            }
+        }
+    }
+
 }
