@@ -1,4 +1,4 @@
-# SceneKit-Outline-Example
+# SceneKit Outline Example
 Outline shaders in SceneKit
 
 ![Output Sample](/images/ExampleCorrectOutput.png)
